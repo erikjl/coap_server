@@ -1,0 +1,5 @@
+# depslib dependency file v1.0
+1472189706 source:/home/erik/develop/CoAP_Server/main.cpp
+	<iostream>
+	<coap/coap.h>
+
