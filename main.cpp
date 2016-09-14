@@ -1,4 +1,5 @@
 #include <iostream>
+#include <stdio.h>
 #include <coap/coap.h>
 
 #define WITH_POSIX
@@ -11,14 +12,16 @@ static void tempHandler(coap_context_t *ctx, struct coap_resource_t *resource,
                         coap_pdu_t *request, str *token, coap_pdu_t *response)
 {
     unsigned char buf[3];
-    const char* response_data  = "Fuck off wanker!";
+    const char* response_data  = "72.4";
     response->hdr->code = COAP_RESPONSE_CODE(205);
     coap_add_option(response, COAP_OPTION_CONTENT_TYPE, coap_encode_var_bytes(buf, COAP_MEDIATYPE_TEXT_PLAIN), buf);
     coap_add_data(response, strlen(response_data), (unsigned  char*)response_data);
+    cout << "  Response sent!" << endl;
 }
 
-//TODO: make observable
+#define IPV6
 
+//TODO: make observable
 int main()
 {
     coap_context_t *ctx;
@@ -28,8 +31,13 @@ int main()
 
     cout << "Prep server socket..." << endl;
     coap_address_init(&svr_addr);
+    #ifdef IPV6
+    svr_addr.addr.sin.sin_family = AF_INET6;
+    #endif // IPV6
+    #ifdef IPV4
     svr_addr.addr.sin.sin_family = AF_INET;
-    svr_addr.addr.sin.sin_addr.s_addr = INADDR_ANY;
+    #endif // IPV4
+    svr_addr.addr.sin.sin_addr.s_addr =  INADDR_ANY;
     svr_addr.addr.sin.sin_port = htons(5683);
     ctx = coap_new_context(&svr_addr);
     if(!ctx) exit(EXIT_FAILURE);
