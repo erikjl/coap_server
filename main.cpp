@@ -31,14 +31,23 @@ int main()
 
     cout << "Prep server socket..." << endl;
     coap_address_init(&svr_addr);
+
     #ifdef IPV6
     svr_addr.addr.sin.sin_family = AF_INET6;
+    svr_addr.addr.sin.sin_port = htons(5683);
+    svr_addr.addr.sin.sin_addr.s_addr = INADDR_ANY;
+    //*** The above works with example client: "coap-client -m get coap://[::1]/Temp" ***
+    //svr_addr.addr.sin6.sin6_family = AF_INET6;
+    //svr_addr.addr.sin6.sin6_addr = IN6ADDR_ANY_INIT;
+    //svr_addr.addr.sin6.sin6_port = htons(5683);
     #endif // IPV6
+
     #ifdef IPV4
     svr_addr.addr.sin.sin_family = AF_INET;
-    #endif // IPV4
     svr_addr.addr.sin.sin_addr.s_addr =  INADDR_ANY;
     svr_addr.addr.sin.sin_port = htons(5683);
+    #endif // IPV4
+
     ctx = coap_new_context(&svr_addr);
     if(!ctx) exit(EXIT_FAILURE);
 
